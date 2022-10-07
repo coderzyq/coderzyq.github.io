@@ -1,0 +1,1388 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="浏览器原理, Coderzyq的个人博客">
+    <meta name="description" content="HTTP协议全称：超文本传输协议（HyperText Transfer Protocol）
+概念：HTTP 是一种能够获取像 HTML、图片等网络资源的通讯协议（protocol）。它是在 web 上进行数据交换的基础，是一种 client">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>浏览器原理 | Coderzyq的个人博客</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    
+
+
+    <!-- bg-cover style     -->
+
+
+
+<link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+<link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+<link rel="stylesheet" type="text/css" href="/css/matery.css">
+<link rel="stylesheet" type="text/css" href="/css/my.css">
+<link rel="stylesheet" type="text/css" href="/css/dark.css" media="none" onload="if(media!='all')media='all'">
+
+
+
+
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+    <link rel="stylesheet" href="/css/post.css">
+
+
+
+
+    
+        <link rel="stylesheet" type="text/css" href="/css/reward.css">
+    
+
+
+
+    <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">Coderzyq的个人博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+  <li>
+    <a href="javascript:;" class="waves-effect waves-light" onclick="switchNightMode()" title="深色/浅色模式" >
+      <i id="sum-moon-icon" class="fas fa-sun" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">Coderzyq的个人博客</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/blinkfox/hexo-theme-matery" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/blinkfox/hexo-theme-matery" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/14.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">浏览器原理</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2022-09-30
+                </div>
+                
+
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
+                    2022-10-07
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    6.1k
+                </div>
+                
+
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.min.css">
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="HTTP协议"><a href="#HTTP协议" class="headerlink" title="HTTP协议"></a>HTTP协议</h2><p>全称：超文本传输协议（HyperText Transfer Protocol）</p>
+<p>概念：<code>HTTP</code> 是一种能够获取像 <code>HTML</code>、图片等网络资源的通讯协议（<code>protocol</code>）。它是在 <code>web</code> 上进行数据交换的基础，是一种 <code>client-server</code> 协议。</p>
+<p><strong>HTTP是TCP&#x2F;IP协议簇的最高层–应用层协议</strong></p>
+<h3 id="http的基础特性"><a href="#http的基础特性" class="headerlink" title="http的基础特性"></a>http的基础特性</h3><ul>
+<li><p>可拓展协议。<code>HTTP 1.0</code> 出现的 <code>HTTP headers</code> 让协议拓展变得更加的容易。只要服务端和客户端就 <code>headers</code> 达成语义一致，新功能就可以被轻松的加入进来</p>
+</li>
+<li><p><code>HTTP</code> 是无状态的、有会话的。</p>
+</li>
+<li><p><code>HTTP</code> 与连接。通过 <code>TCP</code>，或者 <code>TLS</code>——加密的 <code>TCP</code> 连接来发送，理论上任何可靠的传输协议都可以使用。连接是传输层控制的，这从根本上来讲不是 <code>HTTP</code> 的范畴。</p>
+<p><img src="C:\Users\NXD006\AppData\Roaming\Typora\typora-user-images\image-20221005172354186.png" alt="http"></p>
+<h3 id="基于http的组件系统"><a href="#基于http的组件系统" class="headerlink" title="基于http的组件系统"></a>基于http的组件系统</h3><p>http的组件系统包括客户端、web服务器和代理</p>
+<p><img src="C:\Users\NXD006\AppData\Roaming\Typora\typora-user-images\image-20221005172612352.png" alt="http的组件系统"></p>
+<h4 id="客户端：user-agent"><a href="#客户端：user-agent" class="headerlink" title="客户端：user-agent"></a>客户端：user-agent</h4><h4 id="web服务端"><a href="#web服务端" class="headerlink" title="web服务端"></a>web服务端</h4><h4 id="代理（Proxies）"><a href="#代理（Proxies）" class="headerlink" title="代理（Proxies）"></a>代理（Proxies）</h4><p>应用层的作用：</p>
+<ul>
+<li>缓存</li>
+<li>过滤（像防病毒扫描、家长控制）</li>
+<li>负载均衡</li>
+<li>认证（对不同的资源进行权限控制）</li>
+<li>日志管理</li>
+</ul>
+</li>
+</ul>
+<h3 id="http报文组成"><a href="#http报文组成" class="headerlink" title="http报文组成"></a>http报文组成</h3><p>http有两种类型消息</p>
+<ul>
+<li><p>请求：由客户端发送用来出发服务器上的动作</p>
+</li>
+<li><p>响应：来自服务器的应答</p>
+<h4 id="http请求和响应"><a href="#http请求和响应" class="headerlink" title="http请求和响应"></a>http请求和响应</h4><p>请求和响应都包含起始行、请求头、空行以及body部分</p>
+</li>
+</ul>
+<h3 id="GET和POST的区别"><a href="#GET和POST的区别" class="headerlink" title="GET和POST的区别"></a>GET和POST的区别</h3><p>缓存：get能缓存，post不能</p>
+<p>安全：get没有post安全，因为请求全在URL中，且会被浏览器保存历史记录，post放在请求体中，会更加安全</p>
+<p>限制：URL有长度限制，会干预get请求，有浏览器决定</p>
+<p>编码：get请求只能进行URL编码，只能接收ASCII字符，post没有限制，post不对数据类型做限制</p>
+<p>get会把请求报文一次性发出去，postHi分为两个TCP数据包，首先发header部分，如果服务器响应100，然后发body部分。</p>
+<h3 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h3><ul>
+<li><p>100~199——信息性状态码</p>
+<p>101 Switching Protocols。在HTTP升级为WebSocket的时候，如果服务器同意变更，就会发送状态码 101。</p>
+</li>
+<li><p>200~299——成功状态码</p>
+<p>200 OK，表示从客户端发来的请求在服务器端被正确处理</p>
+<p>204 No content，表示请求成功，但响应报文不含实体的主体部分</p>
+<p>205 Reset Content，表示请求成功，但响应报文不含实体的主体部分，但是与 204 响应不同在于要求请求方重置内容</p>
+<p>206 Partial Content，进行范围请求</p>
+</li>
+<li><p>300~399——重定向状态码</p>
+<p>301 moved permanently，永久性重定向，表示资源已被分配了新的 URL</p>
+<p>302 found，临时性重定向，表示资源临时被分配了新的 URL</p>
+<p>303 see other，表示资源存在着另一个 URL，应使用 GET 方法获取资源</p>
+<p>304 not modified，表示服务器允许访问资源，但因发生请求未满足条件的情况</p>
+<p>307 temporary redirect，临时重定向，和302含义类似，但是期望客户端保持请求方法不变向新的地址发出请求</p>
+</li>
+<li><p>400~499——客户端错误状态码</p>
+<p>400 bad request，请求报文存在语法错误</p>
+<p>401 unauthorized，表示发送的请求需要有通过 HTTP 认证的认证信息</p>
+<p>403 forbidden，表示对请求资源的访问被服务器拒绝</p>
+<p>404 not found，表示在服务器上没有找到请求的资源</p>
+</li>
+<li><p>500~599——服务器错误状态码</p>
+<p>500 internal sever error，表示服务器端在执行请求时发生了错误</p>
+<p>501 Not Implemented，表示服务器不支持当前请求所需要的某个功能</p>
+<p>503 service unavailable，表明服务器暂时处于超负载或正在停机维护，无法处理请求</p>
+</li>
+</ul>
+<h3 id="首部"><a href="#首部" class="headerlink" title="首部"></a>首部</h3><h4 id="http-headers"><a href="#http-headers" class="headerlink" title="http headers"></a>http headers</h4><p>1.通用首部（<code>General headers</code>）同时适用于请求和响应消息，但与最终消息主体中传输的数据无关的消息头。如 <code>Date</code></p>
+<p>2.请求首部（<code>Request headers</code>）包含更多有关要获取的资源或客户端本身信息的消息头。如 User-Agent</p>
+<p>3.响应首部（<code>Response headers</code>）包含有关响应的补充信息</p>
+<p>4.实体首部（<code>Entity headers</code>）含有关实体主体的更多信息，比如主体长(<code>Content-Length</code>)度或其 <code>MIME</code> 类型。如 <code>Accept-Ranges</code></p>
+<h2 id="http的前世今生"><a href="#http的前世今生" class="headerlink" title="http的前世今生"></a>http的前世今生</h2><p>在 1991 年发布了 <code>HTTP 0.9</code> 版，在 1996 年发布 1.0 版，1997 年是 1.1 版，1.1 版也是到今天为止传输最广泛的版本。2015 年发布了 2.0 版，其极大的优化了 <code>HTTP/1.1</code> 的性能和安全性，而 2018 年发布的 3.0 版，继续优化 <code>HTTP/2</code>，激进地使用 <code>UDP</code> 取代 <code>TCP</code> 协议，目前，<code>HTTP/3</code> 在 2019 年 9 月 26 日 被 <code>Chrome</code>，<code>Firefox</code>，和 <code>Cloudflare</code> 支持</p>
+<p><img src="C:\Users\NXD006\AppData\Roaming\Typora\typora-user-images\image-20221005202137544.png" alt="http发展历程"></p>
+<h3 id="http-0-9"><a href="#http-0-9" class="headerlink" title="http 0.9"></a>http 0.9</h3><p>单行协议，请求由单行指令构成。以唯一可用的方法 <code>GET</code> 开头。后面跟的是目标资源的路径</p>
+<p>没有响应头，只传输HTML文件，没有状态码</p>
+<h3 id="http-1-0"><a href="#http-1-0" class="headerlink" title="http 1.0"></a>http 1.0</h3><ul>
+<li>协议版本信息会随着每个请求发送</li>
+<li>响应状态码</li>
+<li>引入了 <code>HTTP</code> 头的概念，无论是请求还是拓展，允许传输元数据。使协议变得灵活，更加具有拓展性</li>
+<li><code>Content-Type</code> 请求头，具备了传输除纯文本 <code>HTML</code> 文件以外其他类型文档的能力 在响应中，<code>Content-Type</code> 标头告诉客户端实际返回的内容的内容类型</li>
+</ul>
+<p>媒体类型是一种标准。用来表示文档、文件或者字节流的性质和格式。浏览器通常使用 <code>MIME</code> （<code>Multipurpose Internet Mail Extensions</code> ）类型来确定如何处理 <code>URL</code>，因此 <code>Web</code> 服务器在响应头中配置正确的 <code>MIME</code> 类型会非常的重要。如果配置不正确，可能会导致网站无法正常的工作。<code>MIME</code> 的组成结构非常简单；由类型与子类型两个字符串中间用’&#x2F;‘分隔而组成。</p>
+<p><code>HTTP</code> 从 <code>MIME type</code> 取了一部分来标记报文 <code>body</code> 部分的数据类型，这些类型体现在<code>Content-Type</code> 这个字段，当然这是针对于发送端而言，接收端想要收到特定类型的数据，也可以用 <code>Accept</code> 字段。</p>
+<p>这两个字段的取值可以分为下面几类:</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token operator">-</span> text：text<span class="token operator">/</span>html<span class="token punctuation">,</span> text<span class="token operator">/</span>plain<span class="token punctuation">,</span> text<span class="token operator">/</span>css 等
+<span class="token operator">-</span> image<span class="token operator">:</span> image<span class="token operator">/</span>gif<span class="token punctuation">,</span> image<span class="token operator">/</span>jpeg<span class="token punctuation">,</span> image<span class="token operator">/</span>png 等
+<span class="token operator">-</span> audio<span class="token operator">/</span>video<span class="token operator">:</span> audio<span class="token operator">/</span>mpeg<span class="token punctuation">,</span> video<span class="token operator">/</span>mp4 等
+<span class="token operator">-</span> application<span class="token operator">:</span> application<span class="token operator">/</span>json<span class="token punctuation">,</span> application<span class="token operator">/</span>javascript<span class="token punctuation">,</span> application<span class="token operator">/</span>pdf<span class="token punctuation">,</span> application<span class="token operator">/</span>octet<span class="token operator">-</span>stream<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>同时为了约定请求的数据和响应数据的压缩方式、支持语言、字符集等，还提出了以下的 <code>Header</code></p>
+<p>1.压缩方式:发送端：<code>Content-Encoding</code>（服务端告知客户端，服务器对实体的主体部分的编码方式） 和 接收端：<code>Accept-Encoding</code>（用户代理支持的编码方式），值有 gzip: 当今最流行的压缩格式；deflate: 另外一种著名的压缩格式；br: 一种专门为 HTTP 发明的压缩算法</p>
+<p>2.支持语言：<code>Content-Language</code> 和 <code>Accept-Language</code>（用户代理支持的自然语言集）</p>
+<p>3.字符集：发送端：<code>Content-Type</code> 中，以 <code>charset</code> 属性指定。接收端：<code>Accept-Charset</code>（用户代理支持的字符集）。</p>
+<p><img src="C:\Users\NXD006\AppData\Roaming\Typora\typora-user-images\image-20221005184951741.png" alt="image-20221005184951741"></p>
+<p><code>HTTP/1.0</code> 版的主要缺点是，每个 <code>TCP</code> 连接只能发送一个请求。发送数据完毕，连接就关闭，如果还要请求其他资源，就必须再新建一个连接。<code>TCP</code> 连接的新建成本很高，因为需要客户端和服务器三次握手，并且开始时发送速率较慢（<code>slow start</code>）。</p>
+<h3 id="http-1-1"><a href="#http-1-1" class="headerlink" title="http 1.1"></a>http 1.1</h3><ul>
+<li>连接可以复用。长连接：<code>connection: keep-alive</code>。<code>HTTP 1.1</code> 支持长连接（<code>PersistentConnection</code>），在一个 <code>TCP</code> 连接上可以传送多个 <code>HTTP</code> 请求和响应，减少了建立和关闭连接的消耗和延迟，在 <code>HTTP1.1</code> 中默认开启 <code>Connection：keep-alive</code>，一定程度上弥补了 <code>HTTP1.0</code> 每次请求都要创建连接的缺点。</li>
+<li>增加了管道化技术（<code>HTTP Pipelinling</code>），允许在第一个应答被完全发送完成之前就发送第二个请求，以降低通信延迟。复用同一个 <code>TCP</code> 连接期间，即便是通过管道同时发送了多个请求，服务端也是按请求的顺序依次给出响应的；而客户端在未收到之前所发出所有请求的响应之前，将会阻塞后面的请求(排队等待)，这称为”队头堵塞”（<code>Head-of-line blocking</code>）。</li>
+<li>支持响应分块，分块编码传输：<code>Transfer-Encoding: chunked``Content-length</code> 声明本次响应的数据长度。<code>keep-alive</code> 连接可以先后传送多个响应，因此用 <code>Content-length</code> 来区分数据包是属于哪一个响应。使用 <code>Content-Length</code> 字段的前提条件是，服务器发送响应之前，必须知道响应的数据长度。对于一些很耗时的动态操作来说，这意味着，服务器要等到所有操作完成，才能发送数据，显然这样的效率不高。更好的处理方法是，产生一块数据，就发送一块，采用”流模式”（<code>Stream</code>）取代”缓存模式”（<code>Buffer</code>）。因此，<code>HTTP 1.1</code> 规定可以不使用 <code>Content-Length</code> 字段，而使用”分块传输编码”（<code>Chunked Transfer Encoding</code>）。只要请求或响应的头信息有 <code>Transfer-Encoding: chunked</code> 字段，就表明 <code>body</code> 将可能由数量未定的多个数据块组成。每个数据块之前会有一行包含一个 16 进制数值，表示这个块的长度；最后一个大小为 0 的块，就表示本次响应的数据发送完了。</li>
+<li>引入额外的缓存控制机制。在 <code>HTTP1.0</code> 中主要使用 <code>header</code> 里的 <code>If-Modified-Since</code>,<code>Expires</code> 等来做为缓存判断的标准，<code>HTTP1.1</code> 则引入了更多的缓存控制策略例如 <code>Entity tag</code>, <code>If-None-Match</code>，<code>Cache-Control</code> 等更多可供选择的缓存头来控制缓存策略。</li>
+<li><code>Host</code> 头。不同的域名配置同一个 <code>IP</code> 地址的服务器。<code>Host</code> 是 <code>HTTP 1.1</code> 协议中新增的一个请求头，主要用来实现虚拟主机技术。</li>
+</ul>
+<h3 id="http-2-0"><a href="#http-2-0" class="headerlink" title="http  2.0"></a>http  2.0</h3><p><code>HTTP/2</code> 是二进制协议而不是文本协议。</p>
+<ul>
+<li>帧：客户端与服务器通过交换帧来通信，帧是基于这个新协议通信的最小单位。</li>
+<li>消息：是指逻辑上的 HTTP 消息，比如请求、响应等，由一或多个帧组成。</li>
+<li>流：流是连接中的一个虚拟信道，可以承载双向的消息；每个流都有一个唯一的整数标识符</li>
+</ul>
+<p><code>HTTP 2.0</code> 中的帧将 <code>HTTP/1.x</code> 消息分成帧并嵌入到流 (<code>stream</code>) 中。数据帧和报头帧分离，这将允许报头压缩。将多个流组合，这是一个被称为多路复用 (<code>multiplexing</code>) 的过程，它允许更有效的底层 <code>TCP</code> 连接。</p>
+<p>在 <code>HTTP/2</code> 中，这是一个在  <code>HTTP/1.1</code> 和底层传输协议之间附加的步骤。<code>Web</code> 开发人员不需要在其使用的 <code>API</code> 中做任何更改来利用 <code>HTTP</code> 帧；当浏览器和服务器都可用时，<code>HTTP/2</code> 将被打开并使用。</p>
+<p><img src="C:\Users\NXD006\Desktop\微信图片_20221005185911.png"></p>
+<p><img src="C:\Users\NXD006\AppData\Roaming\Typora\typora-user-images\image-20221005191720319.png" alt="image-20221005191720319"></p>
+<h2 id="https"><a href="#https" class="headerlink" title="https"></a>https</h2><p><code>HTTPS</code> 也是通过 <code>HTTP</code> 协议进行传输信息，但是采用了 <code>TLS</code> 协议进行了加密</p>
+<h3 id="对称加密"><a href="#对称加密" class="headerlink" title="对称加密"></a>对称加密</h3><p>对称加密就是两边拥有相同的秘钥，两边都知道如何将密文加密解密。但是因为传输数据都是走的网络，如果将秘钥通过网络的方式传递的话，一旦秘钥被截获就没有加密的意义的。</p>
+<h3 id="非对称加密"><a href="#非对称加密" class="headerlink" title="非对称加密"></a>非对称加密</h3><p>公钥大家都知道，可以用公钥加密数据。但解密数据必须使用私钥，私钥掌握在颁发公钥的一方。首先服务端将公钥发布出去，那么客户端是知道公钥的。然后客户端创建一个秘钥，并使用公钥加密，发送给服务端。服务端接收到密文以后通过私钥解密出正确的秘钥。</p>
+<h3 id="TSL握手过程"><a href="#TSL握手过程" class="headerlink" title="TSL握手过程"></a>TSL握手过程</h3><p>TSL握手的过程采用的是非对称加密</p>
+<ul>
+<li><code>Client Hello</code>: 客户端发送一个随机值(<code>Random1</code>)以及需要的协议和加密方式。</li>
+<li><code>Server Hello</code> 以及 <code>Certificate</code>: 服务端收到客户端的随机值，自己也产生一个随机值(<code>Random2</code>)，并根据客户端需求的协议和加密方式来使用对应的方式，并且发送自己的证书（如果需要验证客户端证书需要说明）</li>
+<li><code>Certificate Verify</code>: 客户端收到服务端的证书并验证是否有效，验证通过会再生成一个随机值(<code>Random3</code>)，通过服务端证书的公钥去加密这个随机值并发送给服务端，如果服务端需要验证客户端证书的话会附带证书</li>
+<li><code>Server 生成 secret</code>: 服务端收到加密过的随机值并使用私钥解密获得第三个随机值(<code>Random3</code>)，这时候两端都拥有了三个随机值，可以通过这三个随机值按照之前约定的加密方式生成密钥，接下来的通信就可以通过该密钥来加密解密</li>
+</ul>
+<p><img src="C:\Users\NXD006\AppData\Roaming\Typora\typora-user-images\image-20221006114815008.png" alt="https请求全流程"></p>
+<h2 id="http-缓存"><a href="#http-缓存" class="headerlink" title="http 缓存"></a>http 缓存</h2><h3 id="强缓存"><a href="#强缓存" class="headerlink" title="强缓存"></a>强缓存</h3><p>强缓存主要由Cache-control和Expires两个Header决定的</p>
+<p>Expires的值和头里边的Date属性的值来判断是否缓存还效。Expires是Web服务器响应消息头字段,在响应http请求时告诉浏览器在过期时间前浏览器可以直接从浏览器缓存取数据,而无需再次请求.<code>Expires</code> 的一个缺点就是，返回的到期时间是服务器端的时间，这是一个绝对的时间，这样存在一个问题，如果客户端的时间与服务器的时间相差很大（比如时钟不同步，或者跨时区），那么误差就很大。</p>
+<p><code>Cache-Control</code> 指明当前资源的有效期，控制浏览器是否直接从浏览器缓存取数据还是重新发请求到服务器取数据。但是其设置的是一个相对时间。指定过期时间：<code>max-age</code> 是距离请求发起的时间的秒数。</p>
+<h5 id="私有和公共缓存"><a href="#私有和公共缓存" class="headerlink" title="私有和公共缓存"></a>私有和公共缓存</h5><p><code>public</code> 表示响应可以被任何中间人（比如中间代理、<code>CDN</code> 等缓存） 而 <code>private</code> 则表示该响应是专用于某单个用户的，中间人不能缓存此响应，该响应只能应用于浏览器私有缓存中。</p>
+<p><code>Cache-control</code> 优先级比 <code>Expires</code> 优先级高</p>
+<p>Cache-Control强缓存的过程</p>
+<ul>
+<li>首次请求，直接从server中获取。其中会设置max-age&#x3D;100</li>
+<li>第二次请求，age&#x3D;10，小于100，则命中Cache,直接返回</li>
+<li>第三次请求，age&#x3D;110，大于110。强缓存失效，就需要再次请求Server</li>
+</ul>
+<p><img src="C:\Users\NXD006\AppData\Roaming\Typora\typora-user-images\image-20221005194035477.png" alt="强缓存"></p>
+<h3 id="协商缓存"><a href="#协商缓存" class="headerlink" title="协商缓存"></a>协商缓存</h3><ul>
+<li><p>If-Modified-Since–Last-Modified</p>
+<p>Last-Modified表示本地文件最后修改日期，浏览器会在request header加上If-Modified-Since(上次返回的Last-Modified的值)，询问服务器在该日期后资源是否有更新，有更新的话就会将新的资源发送回来</p>
+<p>但是如果在本地打开缓存文件，就会造成Last-Modified被修改,所以在HTTP&#x2F;1.1出现了ETag</p>
+</li>
+<li><p>If-none-match-Etags</p>
+<p><code>Etag</code> 就像一个指纹，资源变化都会导致 <code>ETag</code> 变化，跟最后修改时间没有关系，<code>ETag</code> 可以保证每一个资源是唯一的。<code>If-None-Match</code> 的 <code>header</code> 会将上次返回的 <code>Etag</code> 发送给服务器，询问该资源的 <code>Etag</code> 是否有更新，有变动就会发送新的资源回来</p>
+<p>If-none-match、ETags优先级高于If-Modified-Since、Last-Modified</p>
+<p>第一次请求:</p>
+<p><img src="C:\Users\NXD006\AppData\Roaming\Typora\typora-user-images\image-20221005194832245.png" alt="image-20221005194832245"></p>
+</li>
+</ul>
+<p>第二次请求相同网页：</p>
+<p><img src="C:\Users\NXD006\AppData\Roaming\Typora\typora-user-images\image-20221005195009100.png" alt="image-20221005195009100"></p>
+<p>协商缓存，假设没有改动的话，返回304，改动了返回200</p>
+<ul>
+<li>200：强缓存 <code>Expires/Cache-Control</code> 失效时，返回新的资源文件</li>
+<li>200 <code>(from cache)</code>: 强缓 <code>Expires/Cache-Control</code> 两者都存在，未过期，<code>Cache-Control</code> 优先 <code>Expires</code> 时，浏览器从本地获取资源成功</li>
+<li>304 <code>(Not Modified)</code>：协商缓存 <code>Last-modified/Etag</code> 没有过期时，服务端返回状态码304</li>
+</ul>
+<p>现在的200<code>(from cache)</code>已经变成了 <code>disk cache</code>(磁盘缓存)和 <code>memory cache</code>(内存缓存)两种</p>
+<h4 id="revving技术"><a href="#revving技术" class="headerlink" title="revving技术"></a>revving技术</h4><p><code>web</code> 开发者发明了一种被 <code>Steve Souders</code> 称之为 <code>revving</code> 的技术。不频繁更新的文件会使用特定的命名方式：在 <code>URL</code> 后面（通常是文件名后面）会加上版本号。</p>
+<p>弊端：更新了版本号，所有引用这些的资源的地方的版本号都要改变</p>
+<p><code>web</code> 开发者们通常会采用自动化构建工具在实际工作中完成这些琐碎的工作。当低频更新的资源（<code>js/css</code>）变动了，只用在高频变动的资源文件（<code>html</code>）里做入口的改动。</p>
+<h2 id="Cookies"><a href="#Cookies" class="headerlink" title="Cookies"></a>Cookies</h2><p><code>HTTP Cookie</code>（也叫 <code>Web Cookie</code> 或浏览器 <code>Cookie</code>）是服务器发送到用户浏览器并保存在本地的一小块数据，它会在浏览器下次向同一服务器再发起请求时被携带并发送到服务器上。</p>
+<h3 id="创建cookie"><a href="#创建cookie" class="headerlink" title="创建cookie"></a>创建cookie</h3><p><code>Set-Cookie</code> 响应头部和 <code>Cookie</code> 请求头部</p>
+<p><img src="C:\Users\NXD006\AppData\Roaming\Typora\typora-user-images\image-20221005195644856.png" alt="image-20221005195644856"></p>
+<h3 id="会话期cookie"><a href="#会话期cookie" class="headerlink" title="会话期cookie"></a>会话期cookie</h3><p>会话期Cookie是最简单的 <code>Cookie</code>：浏览器关闭之后它会被自动删除，也就是说它仅在会话期内有效。会话期 <code>Cookie</code> 不需要指定过期时间（<code>Expires</code>）或者有效期（<code>Max-Age</code>）。需要注意的是，有些浏览器提供了会话恢复功能，这种情况下即使关闭了浏览器，会话期 <code>Cookie</code> 也会被保留下来，就好像浏览器从来没有关闭一样</p>
+<h3 id="持久性cookie"><a href="#持久性cookie" class="headerlink" title="持久性cookie"></a>持久性cookie</h3><p>和关闭浏览器便失效的会话期 <code>Cookie</code> 不同，持久性 <code>Cookie</code> 可以指定一个特定的过期时间（<code>Expires</code>）或有效期（<code>Max-Age</code>）。</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">Set<span class="token operator">-</span>Cookie<span class="token operator">:</span> id<span class="token operator">=</span>a3fWa<span class="token punctuation">;</span> Expires<span class="token operator">=</span>Wed<span class="token punctuation">,</span> <span class="token number">21</span> Oct <span class="token number">2015</span> <span class="token number">07</span><span class="token operator">:</span><span class="token number">28</span><span class="token operator">:</span><span class="token number">00</span> <span class="token constant">GMT</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="Cookie的secure和HttpOnly标记"><a href="#Cookie的secure和HttpOnly标记" class="headerlink" title="Cookie的secure和HttpOnly标记"></a>Cookie的secure和HttpOnly标记</h3><p>标记为Secure的cookie只应通过被https协议加密的请求发送服务端</p>
+<p>标记为Secure的Cookie只应通过被https协议加密过的请求发送到服务端。但即便设置了 <code>Secure</code> 标记，敏感信息也不应该通过 <code>Cookie</code> 传输，因为 <code>Cookie</code> 有其固有的不安全性，<code>Secure</code> 标记也无法提供确实的安全保障</p>
+<p>通过 <code>JavaScript</code> 的 <code>Document.cookie</code> <code>API</code> 是无法访问带有 <code>HttpOnly</code> 标记的 <code>cookie</code>。这么做是为了避免跨域脚本攻击（<code>XSS</code>）</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">Set<span class="token operator">-</span>Cookie<span class="token operator">:</span> id<span class="token operator">=</span>a3fWa<span class="token punctuation">;</span> Expires<span class="token operator">=</span>Wed<span class="token punctuation">,</span> <span class="token number">21</span> Oct <span class="token number">2015</span> <span class="token number">07</span><span class="token operator">:</span><span class="token number">28</span><span class="token operator">:</span><span class="token number">00</span> <span class="token constant">GMT</span><span class="token punctuation">;</span> Secure<span class="token punctuation">;</span> HttpOnly<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="Cookie的作用域"><a href="#Cookie的作用域" class="headerlink" title="Cookie的作用域"></a>Cookie的作用域</h3><p><code>Domain</code> 和 <code>Path</code> 标识定义了 <code>Cookie</code> 的作用域：即 <code>Cookie</code> 应该发送给哪些 <code>URL</code>。</p>
+<p><code>Domain</code> 标识指定了哪些主机可以接受 <code>Cookie</code>。如果不指定，默认为当前的主机（不包含子域名）。如果指定了 <code>Domain</code>，则一般包含子域名。</p>
+<p>例如，如果设置 <code>Domain=mozilla.org</code>，则 <code>Cookie</code> 也包含在子域名中（如<code>developer.mozilla.org</code>）。</p>
+<p><code>Path</code> 标识指定了主机下的哪些路径可以接受 <code>Cookie</code>（该 <code>URL</code> 路径必须存在于请求 <code>URL</code> 中）。以字符 %x2F (“&#x2F;“) 作为路径分隔符，子路径也会被匹配。</p>
+<h3 id="SameSite-Cookies"><a href="#SameSite-Cookies" class="headerlink" title="SameSite Cookies"></a>SameSite Cookies</h3><p><code>SameSite Cookie</code> 允许服务器要求某个 <code>cookie</code> 在跨站请求时不会被发送，从而可以阻止跨站请求伪造攻击</p>
+<ul>
+<li><code>None</code> 浏览器会在同站请求、跨站请求下继续发送 <code>cookies</code>，不区分大小写。</li>
+<li><code>Strict</code> 浏览器将只在访问相同站点时发送 <code>cookie</code>。</li>
+<li><code>Lax</code> 将会为一些跨站子请求保留，如图片加载或者 <code>frames</code> 的调用，但只有当用户从外部站点导航到 <code>URL</code> 时才会发送。如 <code>link</code> 链接<code>Lax</code> 将会为一些跨站子请求保留，如图片加载或者 <code>frames</code> 的调用，但只有当用户从外部站点导航到 <code>URL</code> 时才会发送。如 <code>link</code> 链接</li>
+</ul>
+<h4 id="None-Strict-Lax"><a href="#None-Strict-Lax" class="headerlink" title="None Strict Lax"></a>None Strict Lax</h4><p>在新版本的浏览器（<code>Chrome 80</code> 之后）中，<code>SameSite</code> 的默认属性是 <code>SameSite=Lax</code>。换句话说，当 <code>Cookie</code> 没有设置 <code>SameSite</code> 属性时，将会视作 <code>SameSite</code> 属性被设置为 <code>Lax</code> —— 这意味着 <code>Cookies</code> 将不会在当前用户使用时被自动发送。如果想要指定 <code>Cookies</code> 在同站、跨站请求都被发送，那么需要明确指定<code>SameSite</code> 为 <code>None</code>。因为这一点，我们需要好好排查旧系统是否明确指定 <code>SameSite</code>，以及推荐新系统明确指定 <code>SameSite</code>，以兼容新旧版本 <code>Chrome</code></p>
+<h2 id="http访问控制（CORS"><a href="#http访问控制（CORS" class="headerlink" title="http访问控制（CORS)"></a>http访问控制（CORS)</h2><p>跨域资源共享（<code>CORS</code>）是一种机制，它使用额外的 <code>HTTP</code> 头告诉浏览器，让运行在一个 <code>origin</code> (<code>domain</code>) 上的 <code>web</code> 应用被准许访问来自不同源服务器上的指定的资源</p>
+<p><img src="C:\Users\NXD006\AppData\Roaming\Typora\typora-user-images\image-20221005201020822.png" alt="image-20221005201020822"></p>
+<p>跨域资源共享标准新增了一组 <code>HTTP</code> 首部字段，允许服务器声明哪些源站通过浏览器有权限访问哪些资源。</p>
+<h3 id="简单请求"><a href="#简单请求" class="headerlink" title="简单请求"></a>简单请求</h3><p>简单请求（不会触发 <code>CORS</code> 的预检请求）需要同时满足以下三点：</p>
+<ul>
+<li><p>方法是 <code>GET/HEAD/POST</code> 之一</p>
+</li>
+<li><p><code>Content-Type</code> 的值仅限 <code>text/plain</code>、<code>multipart/form-data</code>、<code>application/x-www-form-urlencoded</code> 三者之一</p>
+</li>
+<li><pre><code>HTTP` 头部不能超过以下字段：`Accept`、`Accept-Language`、`Content-Language``Content-Type`（需要注意额外的限制）`DPR`、`Downlink`、`Save-Data`、`Viewport-Width`、`Width
+</code></pre>
+</li>
+</ul>
+<p><img src="C:\Users\NXD006\AppData\Roaming\Typora\typora-user-images\image-20221005201224114.png" alt="image-20221005201224114"></p>
+<p>简化如下：</p>
+<p><img src="C:\Users\NXD006\AppData\Roaming\Typora\typora-user-images\image-20221005201257061.png" alt="image-20221005201257061"></p>
+<p>请求首部字段 <code>Origin</code> 表明该请求来源于 <code>http://foo.example</code></p>
+<p>本例中，服务端返回的 <code>Access-Control-Allow-Origin: *</code> 表明，该资源可以被任意外域访问。如果服务端仅允许来自 <code>http://foo.example</code> 的访问，该首部字段的内容如下：</p>
+<p>Access-Control-Allow-Origin: <a target="_blank" rel="noopener" href="http://foo.example/">http://foo.example</a></p>
+<p><code>Access-Control-Allow-Origin</code> 应当为 * 或者包含由 <code>Origin</code> 首部字段所指明的域名。</p>
+<h3 id="预检请求"><a href="#预检请求" class="headerlink" title="预检请求"></a>预检请求</h3><p>规范要求，对那些可能对服务器数据产生副作用的 <code>HTTP</code> 请求方法。浏览器必须首先使用 <code>OPTIONS</code> 方法发起一个预检请求（<code>preflight request</code>），从而获知服务端是否允许该跨域请求。</p>
+<p>服务器确认允许之后，才发起实际的 <code>HTTP</code> 请求。在预检请求的返回中，服务器端也可以通知客户端，是否需要携带身份凭证（包括 <code>Cookies</code> 和 <code>HTTP</code> 认证相关数据）</p>
+<p><img src="C:\Users\NXD006\AppData\Roaming\Typora\typora-user-images\image-20221005201433771.png" alt="image-20221005201433771"></p>
+<p>预检请求中同时携带了下面两个首部字段：</p>
+<p><img src="C:\Users\NXD006\AppData\Roaming\Typora\typora-user-images\image-20221005201457898.png" alt="image-20221005201457898"></p>
+<p>首部字段 <code>Access-Control-Request-Method</code> 告知服务器，实际请求将使用 <code>POST</code> 方法。首部字段 <code>Access-Control-Request-Headers</code> 告知服务器，实际请求将携带两个自定义请求首部字段：<code>X-PINGOTHER</code> 与 <code>Content-Type</code>。服务器据此决定，该实际请求是否被允许。</p>
+<p>预检请求的响应中，包括了以下几个字段</p>
+<p><img src="C:\Users\NXD006\AppData\Roaming\Typora\typora-user-images\image-20221005201541209.png" alt="image-20221005201541209"></p>
+<p>HTTP 请求和响应 一般而言，对于跨域 <code>XMLHttpRequest</code> 或 <code>Fetch</code> 请求，浏览器不会发送身份凭证信息。如果要发送凭证信息，需要设置 <code>XMLHttpRequest</code> 的某个特殊标志位。比如说 <code>XMLHttpRequest</code> 的 <code>withCredentials</code> 标志设置为 <code>true</code>，则可以发送 <code>cookie</code> 到服务端。</p>
+<p>对于附带身份凭证的请求，服务器不得设置 <code>Access-Control-Allow-Origin</code> 的值为“<em>”。这是因为请求的首部中携带了 <code>Cookie</code> 信息，如果 <code>Access-Control-Allow-Origin</code> 的值为“</em>”，请求将会失败。而将 <code>Access-Control-Allow-Origin</code> 的值设置为 <code>http://foo.example</code>，则请求将成功执行。</p>
+<h3 id="CORS-涉及到的请求和响应头如下："><a href="#CORS-涉及到的请求和响应头如下：" class="headerlink" title="CORS 涉及到的请求和响应头如下："></a><code>CORS</code> 涉及到的请求和响应头如下：</h3><h4 id="HTTP响应首部字段"><a href="#HTTP响应首部字段" class="headerlink" title="HTTP响应首部字段"></a>HTTP响应首部字段</h4><ul>
+<li><p><code>Access-Control-Allow-Origin</code> 允许访问该资源的外域 <code>URI</code>。对于不需要携带身份凭证的请求，服务器可以指定该字段的值为通配符，表示允许来自所有域的请求。</p>
+</li>
+<li><p><code>Access-Control-Expose-Headers</code> 头让服务器把允许浏览器访问的头放入白名单</p>
+</li>
+<li><p><code>Access-Control-Max-Age</code> 头指定了 <code>preflight</code> 请求的结果能够被缓存多久</p>
+</li>
+<li><p><code>Access-Control-Allow-Credentials</code> 头指定了当浏览器的 <code>credentials</code> 设置为 <code>true</code> 时是否允许浏览器读取 <code>response</code> 的内容。</p>
+</li>
+<li><p><code>Access-Control-Allow-Methods</code> 首部字段用于预检请求的响应。其指明了实际请求所允许使用的 <code>HTTP</code> 方法。</p>
+</li>
+<li><p><code>Access-Control-Allow-Headers</code> 首部字段用于预检请求的响应。其指明了实际请求中允许携带的首部字段。</p>
+<h4 id="HTTP-请求首部字段"><a href="#HTTP-请求首部字段" class="headerlink" title="HTTP 请求首部字段"></a>HTTP 请求首部字段</h4><ul>
+<li><code>Origin</code> 首部字段表明预检请求或实际请求的源站</li>
+<li><code>Access-Control-Request-Method</code> 首部字段用于预检请求。其作用是，将实际请求所使用的 HTTP 方法告诉服务器。</li>
+<li><code>Access-Control-Request-Headers</code> 首部字段用于预检请求。其作用是，将实际请求所携带的首部字段告诉服务器。</li>
+</ul>
+</li>
+</ul>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">Coderzyq</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://example.com/2022/09/30/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%8E%9F%E7%90%86/">http://example.com/2022/09/30/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%8E%9F%E7%90%86/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">Coderzyq</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2022/10/07/javascript%E9%9D%A2%E8%AF%95%E9%A2%98/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="javascript面试题">
+                        
+                        <span class="card-title">javascript面试题</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-10-07
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Coderzyq
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2022/09/30/hello-world/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
+                        
+                        <span class="card-title">Hello World</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-09-30
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Coderzyq
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+
+  <!-- 是否加载使用自带的 prismjs. -->
+  <script type="text/javascript" src="/libs/prism/prism.min.js"></script>
+
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
+<style>
+    .aplayer .aplayer-lrc p {
+        
+        display: none;
+        
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 16px !important;
+    }
+
+    .aplayer .aplayer-lrc p.aplayer-lrc-current {
+        
+        display: none;
+        
+        font-size: 15px;
+        color: #42b983;
+    }
+
+    
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: -66px !important;
+    }
+
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+        left: 0px !important;
+    }
+
+    
+</style>
+<div class="">
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="playlist"
+                   id="503838841"
+                   fixed='true'
+                   autoplay='false'
+                   theme='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.7'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="/libs/aplayer/APlayer.min.js"></script>
+<script src="/libs/aplayer/Meting.min.js"></script>
+
+    
+
+    <div class="container row center-align"
+         style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2022</span>
+            
+            <a href="/about" target="_blank">Coderzyq</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                        class="white-color">10.8k</span>
+            
+            
+            
+                
+            
+            
+                <span id="busuanzi_container_site_pv">
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;<span id="busuanzi_container_site_pv">本站总访问量：<span id="busuanzi_value_site_pv"></span>次</span>&nbsp;
+                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+            </span>
+            
+            
+                <span id="busuanzi_container_site_uv">
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;<span id="busuanzi_container_site_pv">本站总访问人数：&nbsp;
+                    <span id="busuanzi_value_site_uv" class="white-color"></span><span>次</span>
+            </span>
+            
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+                <span id="sitetime"> Loading ...</span>
+                <script>
+                    var calcSiteTime = function () {
+                        var seconds = 1000;
+                        var minutes = seconds * 60;
+                        var hours = minutes * 60;
+                        var days = hours * 24;
+                        var years = days * 365;
+                        var today = new Date();
+                        var startYear = "2022";
+                        var startMonth = "9";
+                        var startDate = "30";
+                        var startHour = "0";
+                        var startMinute = "0";
+                        var startSecond = "0";
+                        var todayYear = today.getFullYear();
+                        var todayMonth = today.getMonth() + 1;
+                        var todayDate = today.getDate();
+                        var todayHour = today.getHours();
+                        var todayMinute = today.getMinutes();
+                        var todaySecond = today.getSeconds();
+                        var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                        var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                        var diff = t2 - t1;
+                        var diffYears = Math.floor(diff / years);
+                        var diffDays = Math.floor((diff / days) - diffYears * 365);
+
+                        // 区分是否有年份.
+                        var language = 'zh-CN';
+                        if (startYear === String(todayYear)) {
+                            document.getElementById("year").innerHTML = todayYear;
+                            var daysTip = 'This site has been running for ' + diffDays + ' days';
+                            if (language === 'zh-CN') {
+                                daysTip = '本站已运行 ' + diffDays + ' 天';
+                            } else if (language === 'zh-HK') {
+                                daysTip = '本站已運行 ' + diffDays + ' 天';
+                            }
+                            document.getElementById("sitetime").innerHTML = daysTip;
+                        } else {
+                            document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                            var yearsAndDaysTip = 'This site has been running for ' + diffYears + ' years and '
+                                + diffDays + ' days';
+                            if (language === 'zh-CN') {
+                                yearsAndDaysTip = '本站已运行 ' + diffYears + ' 年 ' + diffDays + ' 天';
+                            } else if (language === 'zh-HK') {
+                                yearsAndDaysTip = '本站已運行 ' + diffYears + ' 年 ' + diffDays + ' 天';
+                            }
+                            document.getElementById("sitetime").innerHTML = yearsAndDaysTip;
+                        }
+                    }
+
+                    calcSiteTime();
+                </script>
+            
+            <br>
+            
+                <span id="icp"><img src="/medias/icp.png"
+                                    style="vertical-align: text-bottom;"/>
+                <a href="/null" target="_blank">备案信息</a>
+            </span>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/blinkfox" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:1094093944@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+    <a href="" class="tooltipped" target="_blank" data-tooltip="关注我的微信: " data-position="top" data-delay="50">
+        <i class="fab fa-weixin"></i>
+    </a>
+
+
+
+    <a href="https://twitter.com" class="tooltipped" target="_blank" data-tooltip="关注我的Twitter: https://twitter.com" data-position="top" data-delay="50">
+        <i class="fab fa-twitter"></i>
+    </a>
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1094093944" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1094093944" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 白天和黑夜主题 -->
+<div class="stars-con">
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>  
+</div>
+
+<script>
+    function switchNightMode() {
+        $('<div class="Cuteen_DarkSky"><div class="Cuteen_DarkPlanet"></div></div>').appendTo($('body')),
+        setTimeout(function () {
+            $('body').hasClass('DarkMode') 
+            ? ($('body').removeClass('DarkMode'), localStorage.setItem('isDark', '0'), $('#sum-moon-icon').removeClass("fa-sun").addClass('fa-moon')) 
+            : ($('body').addClass('DarkMode'), localStorage.setItem('isDark', '1'), $('#sum-moon-icon').addClass("fa-sun").removeClass('fa-moon')),
+            
+            setTimeout(function () {
+            $('.Cuteen_DarkSky').fadeOut(1e3, function () {
+                $(this).remove()
+            })
+            }, 2e3)
+        })
+    }
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    
+
+    
+        
+        <script type="text/javascript">
+            // 只在桌面版网页启用特效
+            var windowWidth = $(window).width();
+            if (windowWidth > 768) {
+                document.write('<script type="text/javascript" src="/libs/others/sakura.js"><\/script>');
+            }
+        </script>
+    
+
+    <!-- 雪花特效 -->
+    
+
+    <!-- 鼠标星星特效 -->
+    
+
+     
+        <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+        <script src="/libs/others/TencentCaptcha.js"></script>
+        <button id="TencentCaptcha" data-appid="xxxxxxxxxx" data-cbfn="callback" type="button" hidden></button>
+    
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    <!--腾讯兔小巢-->
+    
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
